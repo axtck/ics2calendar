@@ -7,7 +7,7 @@ const readFile = (file, callBack) => {
     reader.addEventListener("load", () => {
         callBack(reader.result); // do callBack with text result
     });
-}
+};
 
 // when file is selected
 const fileSelector = document.getElementById("file-selector");
@@ -24,7 +24,49 @@ fileSelector.addEventListener("change", () => {
 
 // function for converting the text
 const convert = (text) => {
-    const t = text;
-    console.log(t);
-}
+    const rawLines = text.split(/\r/);
+
+    const infoLines = [];
+    rawLines.forEach((line) => {
+        if (line.includes("DTSTART") || line.includes("SUMMARY")) infoLines.push(line);
+    });
+
+    const linesPerEvent = 2;
+
+    const rawBirthdays = infoLines.reduce((resultArray, item, index) => {
+        const chunkIndex = Math.floor(index / linesPerEvent);
+
+        if (!resultArray[chunkIndex]) {
+            resultArray[chunkIndex] = []; // start a new chunk
+        }
+
+        resultArray[chunkIndex].push(item);
+
+        return resultArray;
+    }, []);
+
+    const cleanBirthdays = rawBirthdays.map((e) => {
+        return {
+            date: cleanDate(e[0], "dm"),
+            summary: cleanSummary(e[1])
+        };
+    });
+
+    drawCalendar(cleanBirthdays);
+};
+
+// clean up date format
+const cleanDate = (rawDate, type) => {
+    const month = rawDate.slice(-4, -2);
+    const day = rawDate.slice(-2);
+    return type === "dm" ? `${day}/${month}` : `${month}/${day}`;
+};
+
+// get first and last name
+const cleanSummary = rawSummary => rawSummary.slice(8, -11);
+
+const drawCalendar = (birthdays) => {
+    console.log(birthdays);
+};
+
 
