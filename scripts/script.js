@@ -24,12 +24,13 @@ fileSelector.addEventListener("change", () => {
 
 
 const setTableDisplay = (show) => {
-    const tableBirthdays = document.getElementById("table-birthdays");
-    show ? tableBirthdays.style.display = "block" : tableBirthdays.style.display = "none";
+    const divTableRows = document.getElementById("div-table-birthdays");
+    show ? divTableRows.style.display = "block" : divTableRows.style.display = "none";
 }
 
 setTableDisplay(false);
 
+let birthdaysOutside = [];
 
 // function for converting the text
 const convert = (text) => {
@@ -65,6 +66,8 @@ const convert = (text) => {
         return a.date.month.localeCompare(b.date.month) || a.date.day - b.date.day;
     });
 
+    birthdaysOutside = birthdaysByDate;
+
     setTableDisplay(true);
     showBirthdays(birthdaysByDate);
 
@@ -76,31 +79,32 @@ const showBirthdays = (birthdays) => {
 
     birthdays.forEach((b) => {
         const row = document.createElement("tr");
-        const colName = document.createElement("td");
-        const colDate = document.createElement("td");
-        const colOption = document.createElement("td");
+        const nameCol = document.createElement("td");
+        const dateCol = document.createElement("td");
+        const optionCol = document.createElement("td");
 
         const name = document.createTextNode(b.name);
         const date = document.createTextNode(`${b.date.day.replace(/^0+/, "")} ${b.date.monthLong}`);
 
-        const removeButton = document.createElement("button");
-        removeButton.className = "btn btn-danger";
-        removeButton.textContent = "X";
+        const toggleIncludeParent = document.createElement("div");
+        toggleIncludeParent.className = "form-check form-switch";
 
-        removeButton.addEventListener("click", () => {
-            console.log("clicked");
-        });
+        const toggleIncludeSwitch = document.createElement("input");
+        toggleIncludeSwitch.className = "form-check-input";
+        toggleIncludeSwitch.type = "checkbox";
+        toggleIncludeSwitch.checked = true;
 
-        colName.appendChild(name);
-        colDate.appendChild(date);
-        colOption.appendChild(removeButton);
+        nameCol.appendChild(name);
+        dateCol.appendChild(date);
 
-        row.appendChild(colName);
-        row.appendChild(colDate);
-        row.appendChild(colOption);
+        toggleIncludeParent.appendChild(toggleIncludeSwitch);
+        optionCol.appendChild(toggleIncludeParent);
+
+        row.appendChild(nameCol);
+        row.appendChild(dateCol);
+        row.appendChild(optionCol);
 
         tbodyBirthdays.appendChild(row);
-
     });
 }
 
