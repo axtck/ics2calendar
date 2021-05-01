@@ -1,6 +1,6 @@
 # ICS to Calendar
 
-***An ICS to calendar converter***
+***Create a custom calendar from an ics file***
 
 ---
 
