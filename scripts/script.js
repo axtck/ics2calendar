@@ -1,3 +1,7 @@
+const excluded = [];
+setElemDisplay("div-table-birthdays", false);
+setElemDisplay("div-confirm-button", false);
+
 // function for reading file
 const readFile = (file, callBack) => {
     if (!file || !file.type.startsWith("text/cal")) return console.log("Specify file");
@@ -21,16 +25,6 @@ fileSelector.addEventListener("change", () => {
         convert(text);
     });
 });
-
-
-const setTableDisplay = (show) => {
-    const divTableRows = document.getElementById("div-table-birthdays");
-    show ? divTableRows.style.display = "block" : divTableRows.style.display = "none";
-}
-
-setTableDisplay(false);
-
-let birthdaysOutside = [];
 
 // function for converting the text
 const convert = (text) => {
@@ -66,18 +60,23 @@ const convert = (text) => {
         return a.date.month.localeCompare(b.date.month) || a.date.day - b.date.day;
     });
 
-    birthdaysOutside = birthdaysByDate;
-
-    setTableDisplay(true);
+    setElemDisplay("div-table-birthdays", true);
     showBirthdays(birthdaysByDate);
 
-    drawCalendar(birthdaysByDate);
+    setElemDisplay("div-confirm-button", true);
+    const confirmButton = document.getElementById("btn-confirm");
+
+    confirmButton.addEventListener("click", () => {
+        // filter out excluded birthdays
+        const includedBirthdays = birthdaysByDate.filter((_, i) => !excluded.includes(i));
+        drawCalendar(includedBirthdays);
+    });
 };
 
 const showBirthdays = (birthdays) => {
     const tbodyBirthdays = document.getElementById("tbody-birthdays");
 
-    birthdays.forEach((b) => {
+    birthdays.forEach((b, i) => {
         const row = document.createElement("tr");
         const nameCol = document.createElement("td");
         const dateCol = document.createElement("td");
@@ -94,6 +93,10 @@ const showBirthdays = (birthdays) => {
         toggleIncludeSwitch.type = "checkbox";
         toggleIncludeSwitch.checked = true;
 
+        toggleIncludeSwitch.addEventListener('change', () => {
+            !toggleIncludeSwitch.checked ? excluded.push(i) : excluded.splice(excluded.indexOf(i), 1);
+        });
+
         nameCol.appendChild(name);
         dateCol.appendChild(date);
 
@@ -106,6 +109,17 @@ const showBirthdays = (birthdays) => {
 
         tbodyBirthdays.appendChild(row);
     });
+}
+
+const drawCalendar = (birthdays) => {
+    console.log(birthdays);
+};
+
+
+
+function setElemDisplay(elemId, show) {
+    const elem = document.getElementById(elemId);
+    show ? elem.style.display = "block" : elem.style.display = "none";
 }
 
 // clean up date format
@@ -136,9 +150,4 @@ const getMonths = (monthNum) => {
 
 // get first and last name
 const cleanName = rawSummary => rawSummary.slice(8, -11);
-
-const drawCalendar = (birthdays) => {
-    console.log(birthdays);
-};
-
 

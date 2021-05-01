@@ -12,22 +12,26 @@
 </head>
 
 <body>
-    <div class=" bg-success text-white">
+    <div class="bg-success text-white mb-5">
         <div class="container">
             <h1 class="pt-3 pb-3">ics2calendar</h1>
         </div>
     </div>
     <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-6">
-                <label for="file-selector" class="btn btn-primary form-control">select file</label>
-                <input id="file-selector" class="d-none" type="file" accept=".ics">
+        <div class="div-select-button">
+            <div class="row justify-content-around">
+                <div class="col-4 text-center">
+                    <label for="file-selector" class="btn btn-primary">select file</label>
+                    <input id="file-selector" class="d-none" type="file" accept=".ics">
+                </div>
+                <div id="div-confirm-button" class="col-4 text-center">
+                    <button id="btn-confirm" class="btn btn-success d-inline">confirm</button>
+                </div>
             </div>
         </div>
 
         <div class="row mt-5 justify-content-center">
             <div id="div-table-birthdays" class="col-10">
-                <div></div>
                 <table id="table-birthdays" class="table table-striped">
                     <thead>
                         <tr>
