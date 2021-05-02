@@ -67,6 +67,10 @@ const convert = (text) => {
     const confirmButton = document.getElementById("btn-confirm");
 
     confirmButton.addEventListener("click", () => {
+        setElemDisplay("div-select-button", false);
+        setElemDisplay("div-confirm-button", false);
+        setElemDisplay("div-table-birthdays", false);
+
         // filter out excluded birthdays
         const includedBirthdays = birthdaysByDate.filter((_, i) => !excluded.includes(i));
         drawCalendar(includedBirthdays);
@@ -115,11 +119,60 @@ const drawCalendar = (birthdays) => {
     console.log(birthdays);
 };
 
-
-
 function setElemDisplay(elemId, show) {
     const elem = document.getElementById(elemId);
     show ? elem.style.display = "block" : elem.style.display = "none";
+}
+
+const getAllDaysOfTheYear = () => {
+    const allDays = [];
+
+    const shortMonthNames = ["April", "June", "September", "November"];
+    const longMonthNames = [
+        "January", "March", "May",
+        "July", "August", "October",
+        "December"
+    ];
+
+    const shortMonthNumbers = ["04", "06", "09", "11"];
+    const longMonthNumbers = ["01", "03", "05", "07", "08", "10", "12"]
+
+    const longMonths = [];
+    const shortMonths = [];
+    const specialMonth = [];
+
+    longMonthNames.forEach((month, i) => {
+        for (let j = 1; j < 32; j++) {
+            longMonths.push({
+                month: month,
+                monthNumber: longMonthNumbers[i],
+                day: j
+            });
+        }
+    });
+
+    shortMonthNames.forEach((month, i) => {
+        for (let j = 1; j < 31; j++) {
+            shortMonths.push({
+                month: month,
+                monthNumber: shortMonthNumbers[i],
+                day: j
+            });
+        }
+    })
+
+    for (let j = 1; j < 30; j++) {
+        specialMonth.push({
+            month: "February",
+            monthNumber: "02",
+            day: j
+        });
+    }
+
+    allDays.push(...longMonths, ...shortMonths, ...drawCalendarspecialMonth);
+    allDays.sort((a, b) => a.monthNumber.localeCompare(b.monthNumber));
+
+    return allDays;
 }
 
 // clean up date format
